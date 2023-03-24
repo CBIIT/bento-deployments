@@ -2,6 +2,8 @@
 buildAndDeploy(
     label: "cicd_microservice",
     parameterName: "FrontendTag",
+    playbookRepoBranch: "main",
+    playbookRepoUrl: "https://github.com/CBIIT/bento-deployments",
     codeRepoUrl: "https://github.com/CBIIT/bento-frontend",
     checkoutDirectory: "bento-frontend",
     buildPlaybook: "ansible/build-frontend-microservice.yml",
