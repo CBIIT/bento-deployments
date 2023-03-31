@@ -29,6 +29,7 @@
       include_role:
         name: bento.common.ecs
       vars:
+        service_name: "{{ project_name }}-{{ tier }}-frontend"
         ansible_python_interpreter: /usr/bin/python3
         project_name: "{{project_name}}"
         region: us-east-1
