@@ -136,5 +136,7 @@
           value: "yaml/seed-data-gmb.yaml"
         - name: TOKEN_SECRET
           value: "{{token_secret}}"
+        - name: MYSQL_SESSION_ENABLED
+          value: "true"
         - name: SERVER_HOST
           value: "{% if tier == 'prod'  and project_name == 'bento' %}https://{{domain_name}}/v1/graphql/{% elif tier == 'prod' %}https://{{subdomain}}.{{domain_name}}{% else %}https://{{subdomain}}-{{tier}}.{{domain_name}}{% endif %}"

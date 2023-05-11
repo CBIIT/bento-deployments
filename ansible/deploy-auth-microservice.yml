@@ -182,4 +182,6 @@
             value: "true"
           - name: TOKEN_SECRET
             value: "{{token_secret}}"
+          - name: MYSQL_SESSION_ENABLED
+            value: "true"
 

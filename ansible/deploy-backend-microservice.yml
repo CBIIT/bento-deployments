@@ -101,3 +101,5 @@
             value: "{{ redis_port }}"
           - name: REDIS_FILTER_ENABLE
             value: "false"
+          - name: MYSQL_SESSION_ENABLED
+            value: "true"
