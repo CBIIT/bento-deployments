@@ -118,6 +118,8 @@
           value: "{{url_src}}"
         - name: AUTH_ENABLED
           value: "{{auth_enabled}}"
+        - name: AUTHORIZATION_ENABLED
+          value: "true"
         - name: AUTH_URL
           value: "{% if tier == 'prod'  and project_name == 'bento' %}https://{{domain_name}}/api/auth/authenticated{% elif tier == 'prod' %}https://{{subdomain}}.{{domain_name}}/api/auth/authenticated{% else %}https://{{subdomain}}-{{tier}}.{{domain_name}}/api/auth/authenticated{% endif %}"
         - name: BACKEND_URL
