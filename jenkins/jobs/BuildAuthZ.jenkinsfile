@@ -17,14 +17,14 @@ pipeline {
             value: 'dev,qa,stage,prod')
 
         gitParameter(branchFilter: 'origin/(.*)',
-            defaultValue: 'main',
+            defaultValue: 'master',
             name: 'CodeBranch',
             type: 'GitParameterDefinition',
             quickFilterEnabled: true,
             selectedValue: 'DEFAULT',
             sortMode: 'ASCENDING_SMART',
             tagFilter: '*',
-            useRepository: 'https://github.com/CBIIT/bento-files')
+            useRepository: 'https://github.com/CBIIT/bento-users')
 
         booleanParam(
             defaultValue: true,
@@ -44,11 +44,11 @@ pipeline {
   environment {
 
       PROJECT      = "bento"
-	  SERVICE      = "files"
-	  ECR_REPO     = "bento-files"
-	  DEPLOY_JOB   = "DeployFiles"
+	  SERVICE      = "users"
+	  ECR_REPO     = "bento-users"
+	  DEPLOY_JOB   = "DeployAuthZ"
 	  SLACK_SECRET = "bento_slack_url"
-	  CODE_REPO    = "bento-files"
+	  CODE_REPO    = "bento-users"
 	  JOB_PATH     = "Bento/_jobs"
 	  REGION       = "us-east-1"
 	  DEPLOY_REPO  = "${env.PROJECT}-deployments"
