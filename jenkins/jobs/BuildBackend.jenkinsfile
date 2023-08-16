@@ -96,6 +96,9 @@ pipeline {
 				// set repo URL
 				env.REPO_URL = "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO}"
 
+				// set repo URL - base images
+				env.BASE_IMAGE_URL = "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/base-images"
+
 			}
 
  		}
@@ -112,6 +115,9 @@ pipeline {
 
 				# build Docker container
 				echo "Building: $ECR_REPO:$CODE_BRANCH.$BUILD_NUMBER"
+
+				# login to base images repo
+				docker login -u AWS -p $(aws ecr get-login-password --region $REGION) $BASE_IMAGE_URL
 
 				cd $WORKSPACE/$CODE_FOLDER && DOCKER_BUILDKIT=1 docker build --no-cache --build-arg="ECR_REPO=$ECR_ACCOUNT.dkr.ecr.$REGION.amazonaws.com" -t $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER .
 
