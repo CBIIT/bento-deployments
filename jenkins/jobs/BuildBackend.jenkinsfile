@@ -116,8 +116,8 @@ pipeline {
 
 			wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                 ansiblePlaybook(
-					playbook: "${WORKSPACE}/playbooks/ansible/build-backend-microservice.yml", 
-            		inventory: "${WORKSPACE}/playbooks/ansible/hosts",
+					playbook: "${WORKSPACE}/bento-deployments/ansible/build-backend-microservice.yml", 
+            		inventory: "${WORKSPACE}/bento-deployments/ansible/hosts",
                     extraVars: [
                         tier: "${ENV}",
 						project_name: "${PROJECT}",
