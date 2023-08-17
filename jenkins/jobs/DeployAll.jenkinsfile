@@ -1,0 +1,107 @@
+@Library('datacommons-jenkins-shared-library@v1.1') _
+
+pipeline {
+	agent {
+		node {
+			label 'cicd_microservice'
+		}
+	}
+
+	parameters {
+
+        extendedChoice(
+            name: 'Environment',
+            defaultValue: 'dev',
+            description: 'Choose the environment to deploy to',
+            type: 'PT_SINGLE_SELECT',
+            value: 'dev,qa,perf,prod')
+
+  }
+
+  options {
+
+	timestamps()
+
+  }
+
+  environment {
+
+	PROJECT      = "bento"
+    JOB_PATH     = "Bento/_jobs"
+	SLACK_SECRET = "bento_slack_url"
+    ENV          = "${params.Environment}"
+    DEPLOY_REPO  = "${env.PROJECT}-deployments"
+
+  }
+
+  stages{
+
+  	stage('checkout'){
+
+  		steps {
+
+		checkout([$class: 'GitSCM',
+			branches: [[name: "${env.ENV}"]],
+			extensions: [[$class: 'SubmoduleOption', 
+			recursiveSubmodules: true],
+			[$class: 'RelativeTargetDirectory',
+			relativeTargetDir: "${env.PROJECT}-deployments"]],
+			userRemoteConfigs:
+			[[url: "https://github.com/CBIIT/${env.DEPLOY_REPO}"]]])
+
+        }
+
+  	}
+
+  	stage('Deploy'){
+
+        agent {
+            docker {
+                image 'cbiitssrepo/cicd-ansible_4.0'
+                args '--net=host -u root -v /var/run/docker.sock:/var/run/docker.sock'
+                reuseNode true
+            }
+        }
+
+ 		steps {
+
+            script {
+
+                def deployment = readYaml file: "${WORKSPACE}/${PROJECT}-deployments/deployments.yaml"
+                deployment.services.each {
+                    buildJob(
+                        jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
+                        parameters:[
+                                string(name: 'Environment', value: params["Environment"]),
+                                string(name: 'ImageTag' , value: it.value.image)
+                        ]
+                    )
+                }
+		    }
+
+ 		}
+
+  	}
+
+  }
+
+  post {
+
+    always {
+
+        notify(
+            secretPath: "notification/slack",
+            secretName: "${env.SLACK_SECRET}"
+        ) 
+
+    }
+
+    cleanup {
+
+        cleanWs()
+
+    }
+
+  }
+
+}
