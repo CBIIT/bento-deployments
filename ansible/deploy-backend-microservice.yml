@@ -20,7 +20,7 @@
         name: bento.common.ecr_login
       vars:
         region: us-east-1
-ß
+
     #deploy backend
     - name: deploy stage for backend microservice
       include_role:
