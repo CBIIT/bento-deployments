@@ -259,7 +259,8 @@ pipeline {
                 tagRepo ( 
                     gitTag: "${env.CODE_BRANCH}",
                     gitUrl: "github.com/CBIIT/${env.CODE_REPO}",
-                    checkoutDirectory: "${env.CODE_FOLDER}"
+                    //checkoutDirectory: "${env.CODE_FOLDER}"
+					checkoutDirectory: "${env.WORKSPACE}"
                 )
 
             }
