@@ -79,9 +79,12 @@ pipeline {
 
  		steps {
 
- 			script {
+			script {
 
-			    // set ECR account number
+			    // set display name for run
+				currentBuild.displayName = "Tag: ${IMAGE_TAG}  Environment: ${ENV}"
+
+				// set ECR account number
 				//env.ECR_ACCOUNT = sh(label: 'Get ECR account', returnStdout: true, script: "aws secretsmanager get-secret-value --region $REGION --secret-id bento/$PROJECT/$ENV --query SecretString --output text | jq -r '.ecr_account'").trim()
 				env.ECR_ACCOUNT = sh(label: 'Get ECR account', returnStdout: true, script: "aws sts get-caller-identity --query \"Account\" --output text").trim()
 
