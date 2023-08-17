@@ -35,7 +35,8 @@
         region: us-east-1
         container_name: "backend"
         service_name: "{{ project_name }}-{{ tier }}-backend"
-        auth_enabled: "true"
+        #auth_enabled: "true"
+        auth_enabled: "false"
         image_version: "{{ lookup('env','BE_VERSION') }}"
         tier: "{{ lookup('env','TIER') }}"
         ecs_cluster_name: "{{ project_name }}-{{ tier }}-ecs"
