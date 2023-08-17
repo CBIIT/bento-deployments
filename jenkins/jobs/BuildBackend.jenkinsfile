@@ -66,8 +66,8 @@ pipeline {
 			branches: [[name: "${env.CODE_BRANCH}"]],
 			extensions: [[$class: 'SubmoduleOption', 
 			recursiveSubmodules: true],
-			[$class: 'RelativeTargetDirectory',
-			relativeTargetDir: "${env.CODE_FOLDER}"]],
+			//[$class: 'RelativeTargetDirectory',
+			//relativeTargetDir: "${env.CODE_FOLDER}"]],
 			userRemoteConfigs:
 			[[url: "https://github.com/CBIIT/${env.CODE_REPO}"]]])
 
