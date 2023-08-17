@@ -104,3 +104,5 @@
             value: "false"
           - name: MYSQL_SESSION_ENABLED
             value: "true"
+          - name: AUTH_ENABLED
+            value: "{{ auth_enabled }}"
