@@ -120,7 +120,7 @@ pipeline {
 	stage('Build'){
 
 	    environment {
-            BE_VERSION = "${CODE_BRANCH}.${BUILD_NUMBER}"
+            BE_VERSION = "${CODE_BRANCH}"
         }
 
  		steps {
