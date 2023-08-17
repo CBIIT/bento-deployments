@@ -111,8 +111,8 @@ pipeline {
 
 			wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                 ansiblePlaybook(
-					playbook: "${WORKSPACE}/playbooks/ansible/playbooks/deploy-files-microservice.yml", 
-            		inventory: "${WORKSPACE}/playbooks/ansible/playbooks/hosts",
+					playbook: "${WORKSPACE}/playbooks/ansible/deploy-files-microservice.yml", 
+            		inventory: "${WORKSPACE}/playbooks/ansible/hosts",
                     extraVars: [
                         tier: "${ENV}",
 						project_name: "${PROJECT}",
