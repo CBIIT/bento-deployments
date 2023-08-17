@@ -3,7 +3,7 @@
 pipeline {
 	agent {
 		node {
-			label ''   // Set to use a Jenkins agent in your desired account
+			label 'cicd_microservice'
 		}
 	}
 
@@ -19,7 +19,7 @@ pipeline {
             defaultValue: 'dev',
             description: 'Choose the environment to deploy to',
             type: 'PT_SINGLE_SELECT',
-            value: 'dev,qa,stage,prod')
+            value: 'dev,qa,perf,prod')
 
   }
 
@@ -31,13 +31,14 @@ pipeline {
 
   environment {
 
-	PROGRAM      = ""     // set to your program name (crdc, ccdi)
-	PROJECT      = ""     // set to your project name
-	APP          = ""     // set to the name of the service you are deploying
-	SLACK_SECRET = ""     // set to your slack secret name
+	//PROGRAM      = ""
+	PROJECT      = "bento"
+	APP          = "frontend"
+	SLACK_SECRET = "bento_slack_url"
 	REGION       = "us-east-1"
 	DEPLOY_REPO  = "${env.PROJECT}-deployments"
-	ECR_REPO     = "${env.PROGRAM}-${env.PROJECT}-${env.APP}"
+	//ECR_REPO     = "${env.PROGRAM}-${env.PROJECT}-${env.APP}"
+	ECR_REPO     = "${env.PROJECT}-${env.APP}"
 	IMAGE_TAG    = "${params.ImageTag}"
 	ENV          = "${params.Environment}"
 	CLUSTER      = "${env.PROJECT}-${env.ENV}-ecs"
@@ -52,7 +53,8 @@ pipeline {
   		steps {
 
   		checkout([$class: 'GitSCM',
-			branches: [[name: '*/main']],
+			//branches: [[name: '*/main']],
+			branches: [[name: '*/declarative_jenkins']],
 			extensions: [[$class: 'SubmoduleOption', 
 			recursiveSubmodules: true],
 			[$class: 'RelativeTargetDirectory',
@@ -79,8 +81,12 @@ pipeline {
 
  			script {
 
-			    // set ECR account number
-				env.ECR_ACCOUNT = sh(label: 'Get ECR account', returnStdout: true, script: "aws secretsmanager get-secret-value --region $REGION --secret-id bento/$PROJECT/$ENV --query SecretString --output text | jq -r '.ecr_account'").trim()
+			    // set display name for run
+				currentBuild.displayName = "Tag: ${IMAGE_TAG}  Environment: ${ENV}"
+
+				// set ECR account number
+				//env.ECR_ACCOUNT = sh(label: 'Get ECR account', returnStdout: true, script: "aws secretsmanager get-secret-value --region $REGION --secret-id bento/$PROJECT/$ENV --query SecretString --output text | jq -r '.ecr_account'").trim()
+				env.ECR_ACCOUNT = sh(label: 'Get ECR account', returnStdout: true, script: "aws sts get-caller-identity --query \"Account\" --output text").trim()
 
 				// set repo URL
 				env.REPO_URL = "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO}"
@@ -93,13 +99,13 @@ pipeline {
 
   	stage('Deploy'){
 
-        agent {
-            docker {
-                image 'cbiitssrepo/cicd-ansible_4.0'
-                args '--net=host -u root -v /var/run/docker.sock:/var/run/docker.sock'
-                reuseNode true
-            }
-        }
+        // agent {
+        //     docker {
+        //         image 'cbiitssrepo/cicd-ansible_4.0'
+        //         args '--net=host -u root -v /var/run/docker.sock:/var/run/docker.sock'
+        //         reuseNode true
+        //     }
+        // }
 
 	    environment {
             FE_VERSION = "${params.ImageTag}"
@@ -110,15 +116,17 @@ pipeline {
 
 			wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                 ansiblePlaybook(
-					playbook: "${WORKSPACE}/playbooks/ansible/playbooks/deploy-frontend-microservice.yml", 
-            		inventory: "${WORKSPACE}/playbooks/ansible/playbooks/hosts",
+					playbook: "${WORKSPACE}/playbooks/ansible/deploy-frontend-microservice.yml", 
+            		inventory: "${WORKSPACE}/playbooks/ansible/hosts",
                     extraVars: [
-                        tier: "${params.Environment}",
+                        tier: "${ENV}",
 						project_name: "${PROJECT}",
-						iam_prefix: "power-user",
-						subdomain: "trialcommons",
-						domain_name: "cancer.gov",
-						auth_enabled: false
+						iam_prefix: "",
+						subdomain: "bento",
+        				domain_name: "bento-tools.org",
+						//auth_enabled: false,
+						//ecr_repo: "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com"
+						ecr_repo: "${REPO_URL}"
 						],
                     colorized: true)
  			}
