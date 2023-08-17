@@ -119,7 +119,7 @@ pipeline {
 				# login to base images repo
 				docker login -u AWS -p $(aws ecr get-login-password --region $REGION) $BASE_IMAGE_URL
 
-				cd $WORKSPACE/$CODE_FOLDER && DOCKER_BUILDKIT=1 docker build --no-cache --build-arg="ECR_REPO=$ECR_ACCOUNT.dkr.ecr.$REGION.amazonaws.com" -t $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER .
+				cd $WORKSPACE/$CODE_FOLDER && DOCKER_BUILDKIT=1 docker build --no-cache --build-arg="ECR_REPO=$ECR_ACCOUNT.dkr.ecr.$REGION.amazonaws.com" --build-arg="BENTO_API_VERSION=$CODE_BRANCH.$BUILD_NUMBER" -t $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER .
 
 				'''
 
