@@ -108,7 +108,7 @@ pipeline {
         // }
 
 	    environment {
-            FILES_VERSION = "${IMAGE_TAG}"
+            AUTH_VERSION = "${IMAGE_TAG}"
         }
 
  		steps {
