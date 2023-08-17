@@ -115,7 +115,7 @@ pipeline {
 
 			wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                 ansiblePlaybook(
-					playbook: "${WORKSPACE}/playbooks/ansible/deploy-auth-microservice.yml", 
+					playbook: "${WORKSPACE}/playbooks/ansible/deploy-users-microservice.yml", 
             		inventory: "${WORKSPACE}/playbooks/ansible/hosts",
                     extraVars: [
                         tier: "${ENV}",
