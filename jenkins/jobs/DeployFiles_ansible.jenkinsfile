@@ -124,7 +124,8 @@ pipeline {
 						subdomain: "bento",
         				domain_name: "bento-tools.org",
 						//auth_enabled: false,
-						ecr_repo: "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com"
+						//ecr_repo: "${ECR_ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com"
+						ecr_repo: "${REPO_URL}"
 						],
                     colorized: true)
  			}
