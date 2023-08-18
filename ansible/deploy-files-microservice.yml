@@ -62,6 +62,10 @@
       include_role:
         #name: bento.common.ecs_cloudwatch
         name: bento.common.ecs
+        apply:
+          environment:
+            AWS_RETRY_MODE: "standard"
+            AWS_MAX_ATTEMPTS: 10
       vars:
         service_name: "{{ project_name }}-{{ tier }}-files"
         cloudfront_key_group_name: "{{ lookup('amazon.aws.aws_secret', 'cloudfront.key_group_name', nested=true, region='us-east-1' ) }}"
