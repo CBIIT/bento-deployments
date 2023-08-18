@@ -69,15 +69,17 @@ pipeline {
             script {
 
                 def deployment = readYaml file: "${WORKSPACE}/${PROJECT}-deployments/deployments.yaml"
-                deployJobs = deployment.services.each {
-                    buildJob(
-                        jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
-                        //waitForStart: true,
-                        parameters:[
+                def deployJobs = [:]
+                deployment.services.each { it ->
+                    deployJobs[it] = {
+                        buildJob(
+                            jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
+                            parameters:[
                                 string(name: 'Environment', value: params["Environment"]),
                                 string(name: 'ImageTag' , value: it.value.image)
-                        ]
-                    )
+                            ]
+                        )
+                    }
                 }
                 parallel deployJobs
 		    }
