@@ -45,6 +45,7 @@ pipeline {
 
       PROJECT      = "bento"
 	  SERVICE      = "users"
+	  APP          = "authz"
 	  ECR_REPO     = "bento-users"
 	  DEPLOY_JOB   = "DeployAuthZ"
 	  SLACK_SECRET = "bento_slack_url"
@@ -190,7 +191,7 @@ pipeline {
                     writeDeployment(
                         version: "${env.CODE_BRANCH}.${BUILD_NUMBER}",
                         image:  "${env.CODE_BRANCH}.${BUILD_NUMBER}",
-                        service: "${env.SERVICE}",
+                        service: "${env.APP}",
                         deploymentFile: "${env.PROJECT}-deployments/deployments.yaml",
                         deploymentRepoUrl: "https://github.com/CBIIT/${env.DEPLOY_REPO}",
                         deploymentCheckoutDirectory: "${env.PROJECT}-deployments"
