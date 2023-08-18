@@ -80,7 +80,7 @@ pipeline {
                         ]
                     )
 
-                    println job
+                    println job.externalizableId
                     jobIds.add(job.id)
                 }
 
