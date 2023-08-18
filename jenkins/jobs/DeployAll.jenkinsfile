@@ -73,12 +73,14 @@ pipeline {
                 deployment.services.each {
                     def job = buildJob(
                         jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
+                        waitForStart: true,
                         parameters:[
                                 string(name: 'Environment', value: params["Environment"]),
                                 string(name: 'ImageTag' , value: it.value.image)
                         ]
                     )
 
+                    println job
                     jobIds.add(job.id)
                 }
 
