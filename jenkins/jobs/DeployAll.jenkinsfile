@@ -70,7 +70,7 @@ pipeline {
 
                 def deployment = readYaml file: "${WORKSPACE}/${PROJECT}-deployments/deployments.yaml"
                 //deployment.services.each {
-                parallel deployment.services.each {
+                deployment.services.eachParallel {
                     buildJob(
                         jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
                         //waitForStart: true,
