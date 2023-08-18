@@ -1,5 +1,5 @@
-//@Library('datacommons-jenkins-shared-library@v1.1') _
-@Library('datacommons-jenkins-shared-library@deploy_wait') _
+@Library('datacommons-jenkins-shared-library@v1.1') _
+//@Library('datacommons-jenkins-shared-library@deploy_wait') _
 
 pipeline {
 	agent {
@@ -68,23 +68,18 @@ pipeline {
 
             script {
 
-                def jobIds = []
                 def deployment = readYaml file: "${WORKSPACE}/${PROJECT}-deployments/deployments.yaml"
-                deployment.services.each {
-                    def job = buildJob(
+                //deployment.services.each {
+                parallel deployment.services {
+                    buildJob(
                         jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
-                        waitForStart: true,
+                        //waitForStart: true,
                         parameters:[
                                 string(name: 'Environment', value: params["Environment"]),
                                 string(name: 'ImageTag' , value: it.value.image)
                         ]
                     )
-
-                    println job.externalizableId
-                    jobIds.add(job.id)
                 }
-
-                println jobIds
 		    }
 
  		}
