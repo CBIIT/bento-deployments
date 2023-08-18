@@ -68,16 +68,21 @@ pipeline {
 
             script {
 
+                def jobIds = []
                 def deployment = readYaml file: "${WORKSPACE}/${PROJECT}-deployments/deployments.yaml"
                 deployment.services.each {
-                    buildJob(
+                    def job = buildJob(
                         jobName: "${JOB_PATH}/Deploy" + "${it.key}".capitalize(),
                         parameters:[
                                 string(name: 'Environment', value: params["Environment"]),
                                 string(name: 'ImageTag' , value: it.value.image)
                         ]
                     )
+
+                    jobIds.add(job.id)
                 }
+
+                println jobIds
 		    }
 
  		}
