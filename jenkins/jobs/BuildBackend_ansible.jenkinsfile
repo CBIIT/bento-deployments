@@ -83,8 +83,7 @@ pipeline {
 			[[url: "https://github.com/CBIIT/${env.DEPLOY_REPO}"]]])
 
 		checkout([$class: 'GitSCM',
-			//branches: [[name: '*/main']],
-			branches: [[name: '*/declarative_jenkins']],
+			branches: [[name: '*/main']],
 			extensions: [[$class: 'SubmoduleOption', 
 			recursiveSubmodules: true],
 			[$class: 'RelativeTargetDirectory',
