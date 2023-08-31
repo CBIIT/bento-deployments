@@ -10,12 +10,12 @@
   tasks:
     #install collections
     - name: install aws collection
-      command: ansible-galaxy collection install {{item}}
+      shell: "ansible-galaxy collection install {{ item | quote }} --force"
       loop:
-        - community.docker
-        - amazon.aws
+        - community.docker:<=3.4.3
+        - amazon.aws:<=5.4.0
         - community.aws:<=3.2.0
-        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,v1.0
+        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,v1.8
 
     #docker login
     - name: docker login
@@ -24,41 +24,14 @@
       vars:
         region: us-east-1
     
-    # - name: get neo4j container ip
-    #   block:
-    #     - name: list tasks
-    #       shell: >
-    #         aws ecs list-tasks --service-name {{project_name}}-{{tier}}-neo4j 
-    #         --region us-east-1 --cluster {{project_name}}-{{tier}}-ecs 
-    #         --query 'taskArns[0]' --output text
-    #       register: task_facts
-
-    #     - name: set task_fact
-    #       set_fact:
-    #         task_arn: "{{task_facts.stdout_lines | first}}"
-
-    #     - name: get task ip
-    #       shell: >
-    #         aws ecs describe-tasks 
-    #         --tasks {{task_arn}}
-    #         --region us-east-1 --cluster {{project_name}}-{{tier}}-ecs 
-    #         --query "tasks[0].attachments[0].details[?name=='privateIPv4Address'].value |[0]"
-    #         --output text
-    #       register: task_facts
-
-    #     - name: set task_fact
-    #       set_fact:
-    #         task_ip: "{{task_facts.stdout_lines | first}}"
-
-    #     - name: show container ip
-    #       debug:
-    #         msg: "{{task_ip}}"
-    #   when: use_neo4j_container == "yes"
-
-    #deploy backend
-    - name: deploy stage for backend microservice
+    #deploy authN
+    - name: deploy stage for authN microservice
       include_role:
         name: bento.common.ecs
+        apply:
+          environment:
+            AWS_RETRY_MODE: "standard"
+            AWS_MAX_ATTEMPTS: 10
       vars:
         service_name: "{{ project_name }}-{{ tier }}-auth"
         execution_role: "{% if iam_prefix is defined and iam_prefix != '' %}{{ iam_prefix }}-{{ project_name }}-{{ tier }}-ecs-task-execution-role{% else %}{{ project_name }}-{{ tier }}-task-execution-role{% endif %}"
@@ -101,7 +74,8 @@
         container_port: "8082"
         container_memory: "1024"
         container_cpu: "512"
-        container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        #container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        container_image_url: "{{ ecr_repo }}"
         #Environment
         container_env:
           - name: NEO4J_URI

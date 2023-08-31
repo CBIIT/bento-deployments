@@ -7,12 +7,12 @@
   tasks:
     #install collections
     - name: install aws collection
-      command: ansible-galaxy collection install {{item}}
+      shell: "ansible-galaxy collection install {{ item | quote }} --force"
       loop:
-        - community.docker
-        - amazon.aws
+        - community.docker:<=3.4.3
+        - amazon.aws:<=5.4.0
         - community.aws:<=3.2.0
-        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,bento-ref
+        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,v1.8
 
     #docker login
     - name: docker login
@@ -20,14 +20,15 @@
         name: bento.common.ecr_login
       vars:
         region: us-east-1
-    - name: set fact
-      set_fact:
-        react_app_ga_tracking_id: "{{ lookup('amazon.aws.aws_secret', 'cds/react.react_app_ga_tracking_id', nested=true, region='us-east-1' ) }}"
-      when: project_name=='cds'
+    
     #deploy frontend
     - name: deploy stage for frontend microservice
       include_role:
         name: bento.common.ecs
+        apply:
+          environment:
+            AWS_RETRY_MODE: "standard"
+            AWS_MAX_ATTEMPTS: 10
       vars:
         service_name: "{{ project_name }}-{{ tier }}-frontend"
         ansible_python_interpreter: /usr/bin/python3
@@ -46,7 +47,8 @@
         container_port: 80
         container_memory: "512"
         container_cpu: "256"
-        container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        #container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        container_image_url: "{{ ecr_repo }}"
         about_content_url: "https://raw.githubusercontent.com/CBIIT/bento-frontend/master/src/content/{{ tier }}/aboutPagesContent.yaml"
         newrelic_license_key: "{{ lookup('amazon.aws.aws_secret', 'monitoring/newrelic.api_key', nested=true, region='us-east-1' ) }}"
         app_google_client_id: "{{ lookup('amazon.aws.aws_secret', 'auth/provider/google.idp_client_id', nested=true, region='us-east-1' ) }}"

@@ -1,4 +1,4 @@
-- name: deploy backend microservice
+- name: bento backend deploy pipeline
   hosts: all
   connection: local
   gather_facts: no
@@ -7,12 +7,12 @@
   tasks:
     #install collections
     - name: install aws collection
-      command: ansible-galaxy collection install {{item}}
+      shell: "ansible-galaxy collection install {{ item | quote }} --force"
       loop:
-        - community.docker
-        - amazon.aws
+        - community.docker:<=3.4.3
+        - amazon.aws:<=5.4.0
         - community.aws:<=3.2.0
-        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,v1.0
+        - git+https://github.com/CBIIT/datacommons-devops.git#/ansible/collections/bento/common/,v1.8
 
     #docker login
     - name: docker login
@@ -21,11 +21,15 @@
       vars:
         region: us-east-1
 
-
     #deploy backend
     - name: deploy stage for backend microservice
       include_role:
-        name: bento.common.ecs_cloudwatch
+        #name: bento.common.ecs_cloudwatch
+        name: bento.common.ecs
+        apply:
+          environment:
+            AWS_RETRY_MODE: "standard"
+            AWS_MAX_ATTEMPTS: 10
       vars:
         ansible_python_interpreter: /usr/bin/python3
         execution_role: "{% if iam_prefix is defined and iam_prefix != '' %}{{ iam_prefix }}-{{ project_name }}-{{ tier }}-ecs-task-execution-role{% else %}{{ project_name }}-{{ tier }}-task-execution-role{% endif %}"
@@ -35,7 +39,8 @@
         region: us-east-1
         container_name: "backend"
         service_name: "{{ project_name }}-{{ tier }}-backend"
-        auth_enabled: "true"
+        #auth_enabled: "true"
+        auth_enabled: "false"
         image_version: "{{ lookup('env','BE_VERSION') }}"
         tier: "{{ lookup('env','TIER') }}"
         ecs_cluster_name: "{{ project_name }}-{{ tier }}-ecs"
@@ -48,7 +53,8 @@
         container_port: 8080
         container_memory: 4096
         container_cpu: 2048
-        container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        #container_image_url: "{{ ecr_repo }}/{{ project_name }}-{{ container_name }}"
+        container_image_url: "{{ ecr_repo }}"
         #Elasticsearch
         es_host: "{{ lookup('amazon.aws.aws_secret', 'bento/{{ project_name }}/{{ tier }}.es_host', nested=true, region='us-east-1' ) }}"
         es_schema: "{% if project_name == 'bento' %}es-schema.graphql{% else %}es-schema-{{ project_name }}.graphql{% endif %}"
@@ -103,3 +109,5 @@
             value: "false"
           - name: MYSQL_SESSION_ENABLED
             value: "true"
+          - name: AUTH_ENABLED
+            value: "{{ auth_enabled }}"
