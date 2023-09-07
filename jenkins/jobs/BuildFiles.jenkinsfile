@@ -142,6 +142,7 @@ pipeline {
 
 			    sh label: 'Trivy-Test', script: '''#!/bin/bash
 
+				which docker
 				whoami
 				groups
 				
