@@ -3,7 +3,6 @@
 pipeline {
 	agent {
 		node {
-			//label 'cicd_microservice'
 			label 'build-agent'
 		}
 	}
@@ -142,10 +141,6 @@ pipeline {
 
 			    sh label: 'Trivy-Test', script: '''#!/bin/bash
 
-				#which docker
-				#whoami
-				#groups
-				
 				# Test image for vulnerabilities
                 echo "Testing Image with Trivy: $ECR_REPO:$CODE_BRANCH.$BUILD_NUMBER"
 
