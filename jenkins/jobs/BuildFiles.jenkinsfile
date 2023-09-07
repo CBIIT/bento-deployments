@@ -142,6 +142,9 @@ pipeline {
 
 			    sh label: 'Trivy-Test', script: '''#!/bin/bash
 
+				whoami
+				groups
+				
 				# Test image for vulnerabilities
                 echo "Testing Image with Trivy: $ECR_REPO:$CODE_BRANCH.$BUILD_NUMBER"
 
