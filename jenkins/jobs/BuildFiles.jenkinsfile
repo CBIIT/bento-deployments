@@ -3,6 +3,7 @@
 pipeline {
 	agent {
 		node {
+			//label 'cicd_microservice'
 			label 'build-agent'
 		}
 	}
