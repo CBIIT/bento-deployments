@@ -3,8 +3,8 @@
 pipeline {
 	agent {
 		node {
-			//label 'cicd_microservice'
-			label 'build-agent'
+			label 'cicd_microservice'
+			//label 'build-agent'
 		}
 	}
 
@@ -142,9 +142,9 @@ pipeline {
 
 			    sh label: 'Trivy-Test', script: '''#!/bin/bash
 
-				which docker
-				whoami
-				groups
+				#which docker
+				#whoami
+				#groups
 				
 				# Test image for vulnerabilities
                 echo "Testing Image with Trivy: $ECR_REPO:$CODE_BRANCH.$BUILD_NUMBER"
@@ -152,7 +152,7 @@ pipeline {
                 #trivy image --exit-code 1 --severity HIGH,CRITICAL $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER
                 #trivy image --timeout 15m --severity HIGH,CRITICAL $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER
 				
-				docker run --rm --name trivy bitnami/trivy:latest image --timeout 15m --severity HIGH,CRITICAL $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER
+				docker run --rm --name trivy -u root bitnami/trivy:latest image --timeout 15m --severity HIGH,CRITICAL $REPO_URL:$CODE_BRANCH.$BUILD_NUMBER
 
 				'''
 
