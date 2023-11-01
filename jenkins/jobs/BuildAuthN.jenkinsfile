@@ -46,7 +46,7 @@ pipeline {
 
       PROJECT      = "bento"
 	  SERVICE      = "auth"
-	  APP          = "authn"
+	  APP          = "authN"
 	  ECR_REPO     = "bento-auth"
 	  DEPLOY_JOB   = "DeployAuthN"
 	  SLACK_SECRET = "bento_slack_url"
