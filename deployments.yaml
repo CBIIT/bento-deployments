@@ -10,9 +10,9 @@ services:
     image: 4.0.0.212
     buildNumber: '212'
   authN:
-    version: 2.4.0.70
-    image: 2.4.0.70
-    buildNumber: '70'
+    version: 2.4.0.61
+    image: 2.4.0.61
+    buildNumber: '61'
   files:
     version: 2.3.0.71
     image: 2.3.0.71
