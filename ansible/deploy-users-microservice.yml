@@ -82,6 +82,11 @@
           value: "{{cookie_secret}}"
         - name: SESSION_TIMEOUT
           value: "1800"
+        # Newrelic
+        - name: NEW_RELIC_LICENSE_KEY
+          value: "{{ newrelic_license_key }}"
+        - name: NEW_RELIC_APP_NAME
+          value: "{{project_name}}-{{tier}}-authZ"
         # MySQL Configuration
         - name: MYSQL_HOST
           value: "{{mysql_host}}"
