@@ -329,6 +329,7 @@ variable "create_files_bucket" {
   default = false
 }
 
+# ECR
 variable "replication_destination_registry_id" {
   type = string
   description = "registry id for destination image"

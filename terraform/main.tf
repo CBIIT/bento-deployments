@@ -37,6 +37,7 @@ module "ecs" {
   alb_https_listener_arn = module.alb.alb_https_listener_arn
   target_account_cloudone = var.target_account_cloudone
   allow_cloudwatch_stream = var.allow_cloudwatch_stream
+  central_ecr_account_id  = data.aws_caller_identity.current.account_id
 }
 
 #create ecr
