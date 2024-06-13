@@ -9,7 +9,7 @@ module "alb" {
   tags = var.tags
   stack_name = var.stack_name
   alb_certificate_arn = data.aws_acm_certificate.amazon_issued.arn
-  program = var.stack_name
+  program = "fnl"
   resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
