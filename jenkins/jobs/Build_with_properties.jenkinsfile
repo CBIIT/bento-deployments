@@ -69,6 +69,7 @@ pipeline {
                 if (params.UpdateDeploymentVersion) {
                     writeDeployment(
                         service: "${env.APP}",
+						additionalProperties: "TESTING WRITE",
                         deploymentFile: "${env.PROJECT}-deployments/deployments.yaml",
                         deploymentRepoUrl: "https://github.com/CBIIT/${env.DEPLOY_REPO}",
                         deploymentCheckoutDirectory: "${env.PROJECT}-deployments"
