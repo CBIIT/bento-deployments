@@ -16,7 +16,7 @@ services:
   files:
     version: null
     image: null
-    buildNumber: '5'
+    buildNumber: '6'
     additionalProperties:
       usage: TESTING WRITE
       value: 1
