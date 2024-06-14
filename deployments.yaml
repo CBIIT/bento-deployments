@@ -25,8 +25,8 @@ services:
   Test:
     version: null
     image: null
-    buildNumber: '9'
+    buildNumber: '10'
     additionalProperties:
       usage: TESTING WRITE
-      value: 1
-      next_value: Bob
+      value: 100
+      next_value: Tom
