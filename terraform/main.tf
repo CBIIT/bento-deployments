@@ -40,6 +40,7 @@ module "ecs" {
   target_account_cloudone = var.target_account_cloudone
   allow_cloudwatch_stream = var.allow_cloudwatch_stream
   central_ecr_account_id  = data.aws_caller_identity.current.account_id
+  resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
 #create ecr
