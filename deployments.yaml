@@ -22,3 +22,11 @@ services:
     version: 1.3.0.70
     image: 1.3.0.70
     buildNumber: '70'
+  Test:
+    version: null
+    image: null
+    buildNumber: '8'
+    additionalProperties:
+      usage: TESTING WRITE
+      value: 1
+      next_value: Tom
