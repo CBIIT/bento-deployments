@@ -108,7 +108,7 @@ module "neo4j" {
 
 module "user_neo4j" {
   count = var.create_db_instance ? 1: 0
-  source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/neo4j?ref=neo4j"
+  source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/neo4j?ref=v1.18"
   env = terraform.workspace
   vpc_id = var.vpc_id
   db_subnet_id = var.db_subnet_id
@@ -125,6 +125,7 @@ module "user_neo4j" {
   db_iam_profile_name = var.db_iam_profile_name
   db_security_group_name = var.db_security_group_name
   db_boostrap_ssm_document  = var.db_boostrap_ssm_document
+  resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
 
