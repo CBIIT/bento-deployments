@@ -162,14 +162,12 @@ module "cloudfront" {
   tags = var.tags
   create_files_bucket = var.create_files_bucket
   target_account_cloudone = var.target_account_cloudone
-  #public_key_path = file("${path.module}/workspace/gmb/gmb_public_key.pem")
   public_key_path = file("${path.module}/workspace/bento_public_key.pem")
   resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
 module "s3-replication-source" {
   count = var.create_s3_replication ? 1 : 0
-  #source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/s3-replication-source?ref=neo4j"
   source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/s3-replication-source?ref=v1.18"
   destination_bucket_name = var.destination_bucket_name 
   env =  terraform.workspace
@@ -184,11 +182,9 @@ module "s3-replication-source" {
 
 module "s3-replication-destination" {
   count = var.enable_s3_replication ? 1 : 0
-  #source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/s3-replication-destination?ref=neo4j"
   source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/s3-replication-destination?ref=v1.18"
   destination_bucket_name = var.destination_bucket_name 
   tags = var.tags
   replication_role_arn = var.replication_role_arn
   create_destination_bucket = var.create_destination_bucket
-  #resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
