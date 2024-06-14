@@ -132,7 +132,7 @@ module "user_neo4j" {
 #aurora
 module "aurora" {
   count = var.create_aurora_rds ? 1: 0
-  source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/aurora?ref=neo4j"
+  source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/aurora?ref=v1.18"
   env    =  terraform.workspace
   stack_name = var.stack_name
   tags = var.tags
