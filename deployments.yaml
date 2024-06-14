@@ -14,9 +14,10 @@ services:
     image: 2.3.0.51
     buildNumber: '51'
   files:
-    version: null
-    image: null
-    buildNumber: '7'
+    version: 1
+    image: 1
+    buildNumber: '8'
+    additionalProperties: null
   authZ:
     version: 1.3.0.70
     image: 1.3.0.70
