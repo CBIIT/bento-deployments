@@ -449,7 +449,7 @@ variable "db_boostrap_ssm_document" {
 variable "neo4j_database_name" {
   type = string 
   description = "neo4j database name"
-  default = "neo4j-4"
+  default = "neo4j"
 }
 variable "neo4j_db_ami" {
   type = string
