@@ -69,6 +69,19 @@ pipeline {
                 if (params.UpdateDeploymentVersion) {
                     writeDeployment(
                         service: "${env.APP}",
+						version: 1,
+    					image: 1,
+                        deploymentFile: "${env.PROJECT}-deployments/deployments.yaml",
+                        deploymentRepoUrl: "https://github.com/CBIIT/${env.DEPLOY_REPO}",
+                        deploymentCheckoutDirectory: "${env.PROJECT}-deployments"
+                    )
+                }
+            }
+
+			script {
+                if (params.UpdateDeploymentVersion) {
+                    writeDeployment(
+                        service: "Test",
 						additionalProperties: ["usage": "TESTING WRITE",
 												"value": 1,
 												"next_value": "Tom"],
