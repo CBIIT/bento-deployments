@@ -17,10 +17,6 @@ services:
     version: null
     image: null
     buildNumber: '7'
-    additionalProperties:
-      usage: TESTING WRITE
-      value: 1
-      next_value: Tom
   authZ:
     version: 1.3.0.70
     image: 1.3.0.70
