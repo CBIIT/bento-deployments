@@ -164,6 +164,7 @@ module "cloudfront" {
   create_files_bucket = var.create_files_bucket
   target_account_cloudone = var.target_account_cloudone
   public_key_path = file("${path.module}/workspace/gmb/gmb_public_key.pem")
+  resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
 module "s3-replication-source" {
