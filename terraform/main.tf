@@ -176,7 +176,7 @@ module "s3-replication-source" {
   target_account_cloudone = var.target_account_cloudone
   create_source_bucket = var.create_source_bucket 
   replication_destination_account_id = var.replication_destination_account_id
-  resource_prefix = "${var.stack_name}-${terraform.workspace}"
+  #resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
 module "s3-replication-destination" {
@@ -186,4 +186,5 @@ module "s3-replication-destination" {
   tags = var.tags
   replication_role_arn = var.replication_role_arn
   create_destination_bucket = var.create_destination_bucket
+  #resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
