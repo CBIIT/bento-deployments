@@ -84,7 +84,7 @@ pipeline {
                         service: "Test",
 						additionalProperties: ["usage": "TESTING WRITE",
 												"value": 1,
-												"next_value": "Tom"],
+												"next_value": "Bob"],
                         deploymentFile: "${env.PROJECT}-deployments/deployments.yaml",
                         deploymentRepoUrl: "https://github.com/CBIIT/${env.DEPLOY_REPO}",
                         deploymentCheckoutDirectory: "${env.PROJECT}-deployments"
