@@ -81,6 +81,7 @@ module "opensearch" {
   vpc_id = var.vpc_id
   #opensearch_autotune_rollback_type = "NO_ROLLBACK"
   create_cloudwatch_log_policy = var.create_cloudwatch_log_policy
+  create_snapshot_role = false
   resource_prefix = "${var.stack_name}-${terraform.workspace}"
 }
 
