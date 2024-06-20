@@ -10,6 +10,7 @@ resource "aws_security_group_rule" "alb_http_inbound" {
     module.alb
   ]
 }
+
 #create alb https ingress
 resource "aws_security_group_rule" "alb_https_inbound" {
   from_port   = local.https_port
@@ -22,18 +23,6 @@ resource "aws_security_group_rule" "alb_https_inbound" {
       module.alb
     ]
 }
-#create alb egress
-//resource "aws_security_group_rule" "all_outbound" {
-//  from_port   = local.any_port
-//  protocol    = local.any_protocol
-//  to_port     = local.any_port
-//  cidr_blocks = local.all_ips
-//  security_group_id = module.alb.alb_securitygroup_id
-//  type              = "egress"
-//  depends_on = [
-//      module.alb
-//    ]
-//}
 
 #create ecs ingress sg
 resource "aws_security_group_rule" "inbound_fargate" {
@@ -60,16 +49,6 @@ resource "aws_security_group_rule" "app_inbound" {
   ]
 }
 
-#creeate app egress rule
-# resource "aws_security_group_rule" "app_outbound" {
-#   from_port = local.any_port
-#   protocol = local.any_protocol
-#   to_port = local.any_port
-#   cidr_blocks = local.all_ips
-#   security_group_id = module.ecs.app_security_group_id
-#   type = "egress"
-# }
-
 #create opensearch ingress rule
 resource "aws_security_group_rule" "opensearch_inbound" {
   count = var.create_opensearch_cluster ? 1: 0
@@ -80,18 +59,6 @@ resource "aws_security_group_rule" "opensearch_inbound" {
   type = "ingress"
   cidr_blocks = var.allowed_ip_blocks
 }
-
-#create opensearch egres rule
-# resource "aws_security_group_rule" "opensearch_outbound" {
-#   count = var.create_opensearch_cluster ? 1: 0
-#   from_port = local.any_port
-#   protocol = local.any_protocol
-#   to_port = local.any_port
-#   cidr_blocks = local.all_ips
-#   security_group_id = module.opensearch[count.index].security_group_id
-#   type = "egress"
-# }
-
 
 #create neo4j http ingress rule
 resource "aws_security_group_rule" "neo4j_http" {
@@ -180,6 +147,7 @@ resource "aws_security_group_rule" "katalon_bolt_inbound" {
   security_group_id = module.neo4j[count.index].db_security_group_id
   type = "ingress"
 }
+
 #create katalon http ingress rule
 resource "aws_security_group_rule" "katalon_http_inbound" {
   count = var.create_db_instance ? 1 : 0
