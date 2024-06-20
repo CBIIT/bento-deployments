@@ -66,6 +66,7 @@ module "opensearch" {
   source = "git::https://github.com/CBIIT/datacommons-devops.git//terraform/modules/opensearch?ref=os_module"
   #stack_name = var.stack_name
   tags = var.tags
+  cluster_tshirt_size = var.cluster_tshirt_size
   #opensearch_instance_type = var.opensearch_instance_type
   #env = terraform.workspace
   #opensearch_subnet_ids = var.private_subnet_ids

@@ -200,6 +200,16 @@ variable "opensearch_instance_count" {
   type        = number
   default     = 1
 }
+variable "cluster_tshirt_size" {
+  type        = string
+  description = "Select a T-Shirt size for the cluster"
+  default     = "xs"
+  sensitive   = false
+  validation {
+    condition     = contains(["xs", "sm", "md", "lg", "xl"], var.cluster_tshirt_size)
+    error_message = "The variable cluster_tshirt_size must be one of: xs, sm, md, lg, xl"
+  }
+}
 variable "automated_snapshot_start_hour" {
   description = "hour when automated snapshot to be taken"
   type        = number
