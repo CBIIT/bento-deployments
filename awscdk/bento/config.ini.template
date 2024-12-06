@@ -1,0 +1,20 @@
+[main]
+vpc_id = 
+resource_prefix = 
+tier = 
+
+[nlb]
+internet_facing = false
+
+[db]
+db_user = 
+db_pass = 
+
+[ecs]
+port = 7687
+protocol = TCP
+health_check_path = /
+image = memgraph/memgraph-mage:1.18-memgraph-2.18
+cpu = 256
+memory = 1024
+number_container_replicas = 1

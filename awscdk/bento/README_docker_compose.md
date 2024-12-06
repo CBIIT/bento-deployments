@@ -24,8 +24,13 @@ This will start a container with all required applications installed and map the
 In order to build the bento cdk files you will need to get the required python modules (this command should be run in the bento folder):
 
 ```bash
-pip3 install --ignore-installed -r requirements.txt
+pip3 install --ignore-installed --break-system-packages -r requirements.txt
 ```
+
+
+## Configure the config.ini file
+
+The CDK script get configuration settings from a config.ini file, in order to properly run this project you will need to create this file with the proper values populated. This file can be created by copying the included config.ini.template file and adding in values for any missing information.
 
 
 ## Build Cloudformation scripts for the bento cdk project
@@ -33,11 +38,13 @@ pip3 install --ignore-installed -r requirements.txt
 After modules are installed you can run cdk commands on your stack:
 
 ```bash
-cdk synth -a "python3 app.py -t <tier>"
-cdk bootstrap -a "python3 app.py -t <tier>"
-cdk deploy -a "python3 app.py -t <tier>"
-cdk diff -a "python3 app.py -t <tier>"
-cdk destroy -a "python3 app.py -t <tier>"
+cdk synth
+cdk bootstrap
+cdk deploy
+cdk diff
+cdk destroy
 ```
+
+To skip approval step:  --require-approval never
 
 * Note: an appropriate tier must be specified in bento.properties in order to build the bento scripts - if valid tiers are created or removed for this project getArgs.py must be updated to reflect these changes

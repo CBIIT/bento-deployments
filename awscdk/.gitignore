@@ -10,3 +10,5 @@ imports/*
 */test.py
 cdk.out
 cdk.context.json
+*.ini
+*.pem
