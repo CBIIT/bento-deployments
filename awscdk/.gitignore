@@ -12,4 +12,6 @@ cdk.out
 cdk.context.json
 *.ini
 *.pem
+
+# Ignore debug
 *.bak
