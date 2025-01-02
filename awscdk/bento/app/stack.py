@@ -1,6 +1,7 @@
 import boto3
 from configparser import ConfigParser
 from constructs import Construct
+from cdk_ec2_key_pair import KeyPair, PublicKeyFormat
 
 from aws_cdk import Stack
 from aws_cdk import RemovalPolicy
@@ -12,7 +13,11 @@ from aws_cdk import aws_opensearchservice as opensearch
 from aws_cdk import aws_kms as kms
 from aws_cdk import aws_secretsmanager as secretsmanager
 from aws_cdk import aws_certificatemanager as cfm
-# from aws_cdk import aws_cloudfront as cloudfront
+from aws_cdk import aws_rds as rds
+from aws_cdk import aws_cloudfront as cloudfront
+from aws_cdk import aws_cloudfront_origins as origins
+from aws_cdk import aws_s3 as s3
+from aws_cdk import aws_ssm as ssm
 
 from services import frontend, backend, files, authn, authz
 
@@ -64,27 +69,70 @@ class Stack(Stack):
             #advanced_options={"override_main_response_version" : "true"}
         )
 
-        # ### Cloudfront
-        # self.cf_distribution = cloudfront.Distribution(self, "cf_distro",
-        #     default_behavior=cloudfront.BehaviorOptions(
-        #         origin=origins.S3Origin(s3_bucket),
-        #     )
-        # )
+        ### Cloudfront
+        self.cfOrigin = s3.Bucket(self, "CFBucket",
+            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            # encryption=s3.BucketEncryption.S3_MANAGED,
+            # enforce_sSL=True,
+            # versioned=True,
+            removal_policy=RemovalPolicy.DESTROY
+        )
+
+        self.cfKeys = KeyPair(self, "CFKeyPair",
+            key_pair_name="CF-key-{}-{}".format(config['main']['resource_prefix'], config['main']['tier']),
+            expose_public_key=True,
+            public_key_format=PublicKeyFormat.PEM
+        )
+
+        CFPublicKey = cloudfront.PublicKey(self, "CFPublicKey",
+            encoded_key=self.cfKeys.public_key_value
+        )
+        CFKeyGroup = cloudfront.KeyGroup(self, "CFKeyGroup",
+            items=[CFPublicKey]
+        )
+        
+        self.cfDistribution = cloudfront.Distribution(self, "CFDistro",
+            default_behavior=cloudfront.BehaviorOptions(
+                origin=origins.S3Origin(self.cfOrigin),
+                allowed_methods=cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+                trusted_key_groups=[CFKeyGroup
+                ]
+            )
+        )
+        
+        ### RDS
+        # Create the serverless cluster
+        self.auroraCluster = rds.ServerlessCluster(self, "AuroraCluster",
+            engine=rds.DatabaseClusterEngine.AURORA_MYSQL,
+            vpc=vpc,
+            credentials=rds.Credentials.from_username(config['db']['mysql_user']),
+            default_database_name=config['db']['mysql_database']
+        )
         
         ### Secrets
-        # Read in cloudfront private key
-        with open("private_key.pem", "r") as file:
-            cf_private_key = file.read()
-
-        print(cf_private_key)
-
         self.secret = secretsmanager.Secret(self, "Secret",
             secret_name="{}/{}/{}".format(config['main']['resource_prefix'], config['main']['tier'], "test"),
             secret_object_value={
                 "neo4j_user": SecretValue.unsafe_plain_text(config['db']['neo4j_user']),
-                "neo4j_pass": SecretValue.unsafe_plain_text(config['db']['neo4j_pass']),
+                "neo4j_password": SecretValue.unsafe_plain_text(config['db']['neo4j_password']),
                 "es_host": SecretValue.unsafe_plain_text(self.osDomain.domain_endpoint),
-                "cf_private_key": SecretValue.unsafe_plain_text(cf_private_key),
+ 
+                "cf_key_pair_id": SecretValue.unsafe_plain_text(config['secrets']['cf_key_pair_id']),
+                "cf_url": SecretValue.unsafe_plain_text(config['secrets']['cf_url']),
+                
+                "cookie_secret": SecretValue.unsafe_plain_text(config['secrets']['cookie_secret']),
+                "token_secret": SecretValue.unsafe_plain_text(config['secrets']['token_secret']),
+                "email_user": SecretValue.unsafe_plain_text(config['secrets']['email_user']),
+                "email_password": SecretValue.unsafe_plain_text(config['secrets']['email_password']),
+                "google_client_id": SecretValue.unsafe_plain_text(config['secrets']['google_client_id']),
+                "google_client_secret": SecretValue.unsafe_plain_text(config['secrets']['google_client_secret']),
+                "nih_client_id": SecretValue.unsafe_plain_text(config['secrets']['nih_client_id']),
+                "nih_client_secret": SecretValue.unsafe_plain_text(config['secrets']['nih_client_secret']),
+
+                "mysql_database": SecretValue.unsafe_plain_text(config['db']['mysql_database']),
+                "mysql_host": SecretValue.unsafe_plain_text(config['db']['mysql_host']),
+                "mysql_password": SecretValue.unsafe_plain_text(config['db']['mysql_password']),
+                "mysql_user": SecretValue.unsafe_plain_text(config['db']['mysql_user']),
             }
         )
 
@@ -145,11 +193,11 @@ class Stack(Stack):
         # Backend Service
         backend.backendService.createService(self, config)
 
-        # Files Service
-        files.filesService.createService(self, config)
-
         # AuthN Service
         authn.authnService.createService(self, config)
 
         # AuthZ Service
         authz.authzService.createService(self, config)
+
+        # Files Service
+        files.filesService.createService(self, config)

@@ -4,3 +4,5 @@ constructs>=10.0.0,<11.0.0
 configparser
 boto3
 jsii
+
+cdk-ec2-key-pair

@@ -1,15 +1,13 @@
-from aws_cdk import Duration
-
 from aws_cdk import aws_elasticloadbalancingv2 as elbv2
 from aws_cdk import aws_ecs as ecs
 from aws_cdk import aws_ecr as ecr
 from aws_cdk import aws_secretsmanager as secretsmanager
 
-class backendService:
+class filesService:
   def createService(self, config):
 
-    ### Backend Service ###############################################################################################################
-    service = "backend"
+    ### Files Service ###############################################################################################################
+    service = "files"
     
     # Set container configs
     if config.has_option(service, 'command'):
@@ -18,30 +16,33 @@ class backendService:
         command = None
 
     environment={
-            # "NEW_RELIC_APP_NAME":"{}-{}-{}".format(self.namingPrefix, config['main']['tier'], service),
-            # "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED":"true",
-            # "NEW_RELIC_HOST":"gov-collector.newrelic.com",
-            # "NEW_RELIC_LABELS":"Project:{};Environment:{}".format('bento', config['main']['tier']),
-            # "NEW_RELIC_LOG_FILE_NAME":"STDOUT",
-            # "JAVA_OPTS": "-javaagent:/usr/local/tomcat/newrelic/newrelic.jar",
+            # "NEW_RELIC_APP_NAME":"bento-cdk-files",
             "AUTH_ENABLED":"false",
-            "AUTH_ENDPOINT":"/api/auth/",
-            "BENTO_API_VERSION":config[service]['image'],
+            "AUTH_URL":"/api/auth/authenticated",
+            "AUTHORIZATION_ENABLED":"true",
+            "BACKEND_URL":"/v1/graphql/",
+            "DATE":"2024-07-09",
+            "MYSQL_PORT":"3306",
             "MYSQL_SESSION_ENABLED":"true",
-            "NEO4J_URL":"bolt://{}:7687".format(config['db']['neo4j_ip']),
-            "REDIS_ENABLE":"false",
-            "REDIS_FILTER_ENABLE":"false",
-            "REDIS_HOST":"localhost",
-            "REDIS_PORT":"6379",
-            "REDIS_USE_CLUSTER":"true",
+            "NEO4J_URI":"bolt://{}:7687".format(config['db']['neo4j_ip']),
+            "PROJECT":"BENTO",
+            "URL_SRC":"CLOUD_FRONT",
+            "VERSION":config[service]['image'],
         }
 
     secrets={
-            # "NEW_RELIC_LICENSE_KEY":ecs.Secret.from_secrets_manager(secretsmanager.Secret.from_secret_name_v2(self, "be_newrelic", secret_name='monitoring/newrelic'), 'api_key'),
+            # "NEW_RELIC_LICENSE_KEY":ecs.Secret.from_secrets_manager(secretsmanager.Secret.from_secret_name_v2(self, "files_newrelic", secret_name='monitoring/newrelic'), 'api_key'),
             "NEO4J_PASSWORD":ecs.Secret.from_secrets_manager(self.secret, 'neo4j_password'),
             "NEO4J_USER":ecs.Secret.from_secrets_manager(self.secret, 'neo4j_user'),
-            "ES_HOST":ecs.Secret.from_secrets_manager(secretsmanager.Secret.from_secret_name_v2(self, "es_host_{}".format(service), secret_name='bento/bento/perf'), 'es_host'),
-            # "ES_HOST":ecs.Secret.from_secrets_manager(self.secret, 'es_host'),
+            "CF_PRIVATE_KEY":ecs.Secret.from_secrets_manager(secretsmanager.Secret.from_secret_name_v2(self, "files_cf_key", secret_name="ec2-ssh-key/{}/private".format(self.cfKeys.key_pair_name)), ''),
+            "CF_KEY_PAIR_ID":ecs.Secret.from_secrets_manager(self.secret, 'cf_key_pair_id'),
+            "CF_URL":ecs.Secret.from_secrets_manager(self.secret, 'cf_url'),
+            "MYSQL_DATABASE":ecs.Secret.from_secrets_manager(self.auroraCluster.secret, 'dbname'),
+            "MYSQL_HOST":ecs.Secret.from_secrets_manager(self.auroraCluster.secret, 'host'),
+            "MYSQL_PASSWORD":ecs.Secret.from_secrets_manager(self.auroraCluster.secret, 'password'),
+            "MYSQL_USER":ecs.Secret.from_secrets_manager(self.auroraCluster.secret, 'username'),
+            "TOKEN_SECRET":ecs.Secret.from_secrets_manager(self.secret, 'token_secret'),
+            "COOKIE_SECRET":ecs.Secret.from_secrets_manager(self.secret, 'cookie_secret'),
         }
     
     taskDefinition = ecs.FargateTaskDefinition(self,
@@ -58,7 +59,7 @@ class backendService:
         image=ecs.ContainerImage.from_ecr_repository(repository=ecr_repo, tag=config[service]['image']),
         cpu=config.getint(service, 'cpu'),
         memory_limit_mib=config.getint(service, 'memory'),
-        port_mappings=[ecs.PortMapping(app_protocol=ecs.AppProtocol.http, container_port=config.getint(service, 'port'), name=service)],
+        port_mappings=[ecs.PortMapping(container_port=config.getint(service, 'port'), name=service)],
         command=command,
         environment=environment,
         secrets=secrets,
@@ -79,14 +80,13 @@ class backendService:
             rollback=True
         ),
     )
+    ecsService.connections.allow_to_default_port(self.auroraCluster)
 
     ecsTarget = self.listener.add_targets("ECS-{}-Target".format(service),
         port=int(config[service]['port']),
         protocol=elbv2.ApplicationProtocol.HTTP,
         health_check = elbv2.HealthCheck(
-            path=config[service]['health_check_path'],
-            timeout=Duration.seconds(config.getint(service, 'health_check_timeout')),
-            interval=Duration.seconds(config.getint(service, 'health_check_interval')),),
+            path=config[service]['health_check_path']),
         targets=[ecsService],)
 
     elbv2.ApplicationListenerRule(self, id="alb-{}-rule".format(service),
