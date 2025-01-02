@@ -1,0 +1,42 @@
+name: Deploy CDK Stack
+permissions: 
+  contents: write
+  id-token: write
+on:
+  workflow_dispatch:
+    # inputs:
+    #   fail_on_trivy_scan:
+    #     type: boolean
+    #     description: fail the build if vulnerabilities are found
+    #     required: true 
+    #     default: false
+jobs:
+  build:
+    name: Deploy Bento
+    runs-on: ubuntu-latest
+    # env:
+    #     ECR_REPOSITORY: bento-frontend
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Debug
+      id: debug-steps
+      run: |
+        pwd
+        ls -la
+
+    # - name: Build Config File
+    #   id: build-config-file
+    #   run: |
+    #     echo "[main]" >> config.ini
+    #     echo "vpc_id =" >> config.ini
+
+    # - name: Slack Notification
+    #   uses: act10ns/slack@v1
+    #   with:
+    #     status: ${{ job.status }}
+    #     steps: ${{ toJson(steps) }}
+    #   if: always()
