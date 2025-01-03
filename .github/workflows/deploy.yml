@@ -30,7 +30,7 @@ jobs:
     - name: Set up Node
       uses: actions/setup-node@v3
       with:
-        node-version: "16"
+        node-version: "20"
  
     - name: Install Python dependencies and CDK
       run: |
@@ -38,6 +38,11 @@ jobs:
         # install your Python dependencies here
         cd awscdk/bento && pip3 install --ignore-installed --break-system-packages -r requirements.txt
         npm install -g aws-cdk@2.155.0
+
+    - name: Get ini file
+      run: |
+        which aws
+        aws --version
 
     - name: Debug
       id: debug-steps
