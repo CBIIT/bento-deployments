@@ -50,7 +50,7 @@ jobs:
 
         #git fetch origin cdk:cdk --force
         git fetch
-        git show cdk:deployments.yml > deployments.yml
+        git show cdk:deployments.yaml > deployments.yaml
         #git diff 
 
         vars=$(python3 parseYML.py)
