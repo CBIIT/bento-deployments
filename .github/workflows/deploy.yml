@@ -44,17 +44,21 @@ jobs:
         role-session-name: ${{ github.actor }}
     
     - name: Get config files
+      env:
+        ENV_NAME: ${{ inputs.environment }}
       run: |
         cd awscdk/bento/
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./config.ini
 
         #git fetch origin cdk:cdk --force
         git fetch
-        git show cdk:deployments.yaml > deployments.yaml
+        git show $ENV_NAME:deployments.yaml > deployments.yaml
         #git diff 
 
         vars=$(python3 parseYML.py)
         for v in $vars; do command="export $v"; eval $command;  done
+
+        echo $AUTHZ_IMAGE
 
     - name: Debug
       env:
@@ -65,9 +69,6 @@ jobs:
       run: |
         ls -la
         ls -la awscdk/bento
-        
-        echo $ENV_NAME
-        echo $AUTHZ_IMAGE
 
         # cd awscdk/bento && cdk synth
 
