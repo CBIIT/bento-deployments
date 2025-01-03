@@ -35,7 +35,7 @@ jobs:
     - name: Install Python dependencies and CDK
       run: |
         python -m pip install --upgrade pip
-        # install your Python dependencies here
+        # install stack Python dependencies
         cd awscdk/bento && pip3 install --ignore-installed --break-system-packages -r requirements.txt
         npm install -g aws-cdk@2.155.0
 
@@ -48,16 +48,13 @@ jobs:
     
     - name: Get ini file
       run: |
-        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.dev ./awscdk/bento/config.ini.dev
-        # aws s3 cp s3://fnl-bento-cdk-config/config.ini.dev ./awscdk/bento/config.ini.dev
+        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./awscdk/bento/config.ini
 
     - name: Debug
       id: debug-steps
       run: |
-        cdk --version
-        pwd
-        ls -la
         ls -la awscdk/bento
+        cd awscdk/bento && cdk synth
 
     # - name: Build Config File
     #   id: build-config-file
