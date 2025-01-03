@@ -43,9 +43,17 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
         role-session-name: ${{ github.actor }}
     
-    - name: Get ini file
+    - name: Get config files
       run: |
-        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./awscdk/bento/config.ini
+        cd awscdk/bento/
+        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./config.ini
+
+        git fetch origin cdk:cdk --force
+        git show otherbranch:deployments.yml > deployments.yml
+        #git diff 
+
+        vars=$(python3 parseYML.py)
+        for v in $vars; do command="export $v"; eval $command;  done
 
     - name: Debug
       env:
@@ -54,8 +62,12 @@ jobs:
         ENV_NAME: ${{ inputs.environment }}
       id: debug-steps
       run: |
+        ls -la
         ls -la awscdk/bento
+        
         echo $ENV_NAME
+        echo $AUTHZ_IMAGE
+        
         # cd awscdk/bento && cdk synth
 
     # - name: Build Config File
