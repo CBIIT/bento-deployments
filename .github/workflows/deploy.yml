@@ -4,12 +4,9 @@ permissions:
   id-token: write
 on:
   workflow_dispatch:
-    # inputs:
-    #   fail_on_trivy_scan:
-    #     type: boolean
-    #     description: fail the build if vulnerabilities are found
-    #     required: true 
-    #     default: false
+    inputs:
+      environment:
+        type: environment
 jobs:
   build:
     name: Deploy Bento
