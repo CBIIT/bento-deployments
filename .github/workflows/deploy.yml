@@ -51,10 +51,12 @@ jobs:
       env:
         AWS_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        ENV_NAME: ${{ inputs.environment }}
       id: debug-steps
       run: |
         ls -la awscdk/bento
-        cd awscdk/bento && cdk synth
+        echo $ENV_NAME
+        # cd awscdk/bento && cdk synth
 
     # - name: Build Config File
     #   id: build-config-file
