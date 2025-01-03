@@ -39,6 +39,13 @@ jobs:
         cd awscdk/bento && pip3 install --ignore-installed --break-system-packages -r requirements.txt
         npm install -g aws-cdk@2.155.0
 
+    - name: AWS OIDC Authentication
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-session-name: ${{ github.actor }}
+    
     - name: Get ini file
       run: |
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.dev ./awscdk/bento/config.ini.dev
