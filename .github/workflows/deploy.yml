@@ -21,10 +21,27 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v2
-    
+
+    - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: "16"
+ 
+    - name: Install Python dependencies and CDK
+      run: |
+        python -m pip install --upgrade pip
+        # install your Python dependencies here
+        npm install -g aws-cdk@2.155.0
+
     - name: Debug
       id: debug-steps
       run: |
+        cdk --version
         pwd
         ls -la
 
