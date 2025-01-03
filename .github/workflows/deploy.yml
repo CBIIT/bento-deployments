@@ -41,7 +41,7 @@ jobs:
 
     - name: Get ini file
       run: |
-        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.dev
+        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.dev --outfile awscdk/bento/config.ini.dev
 
     - name: Debug
       id: debug-steps
@@ -49,6 +49,7 @@ jobs:
         cdk --version
         pwd
         ls -la
+        ls -la awscdk/bento
 
     # - name: Build Config File
     #   id: build-config-file
