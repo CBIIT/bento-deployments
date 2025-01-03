@@ -41,8 +41,7 @@ jobs:
 
     - name: Get ini file
       run: |
-        which aws
-        aws --version
+        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.dev
 
     - name: Debug
       id: debug-steps
