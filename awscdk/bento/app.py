@@ -59,10 +59,10 @@ if __name__=="__main__":
     app,
     stack_name="{}-{}".format(config['main']['resource_prefix'], config['main']['tier']),
     synthesizer=synthesizer,
-    # env=cdk.Environment(
-    #   account=os.environ["AWS_DEFAULT_ACCOUNT"],
-    #   region=os.environ["AWS_DEFAULT_REGION"],
-    # ),
+    env=cdk.Environment(
+      account=os.environ["AWS_DEFAULT_ACCOUNT"],
+      region=os.environ["AWS_DEFAULT_REGION"],
+    ),
   )
 
   # Rename all roles to add role prefix

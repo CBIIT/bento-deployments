@@ -51,6 +51,9 @@ jobs:
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./awscdk/bento/config.ini
 
     - name: Debug
+      env:
+        AWS_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
       id: debug-steps
       run: |
         ls -la awscdk/bento
