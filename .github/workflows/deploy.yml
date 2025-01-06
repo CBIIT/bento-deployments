@@ -7,8 +7,11 @@ on:
     inputs:
       environment:
         type: environment
+      frontend_image:
+      backend_image:
+      files_image:
+      authn_image:
       authz_image:
-        # required: false
 jobs:
   build:
     name: Deploy Bento
@@ -48,6 +51,10 @@ jobs:
     - name: Get config files
       env:
         ENV_NAME: ${{ inputs.environment }}
+        FRONTEND_IMAGE: ${{ inputs.frontend_image }}
+        BACKEND_IMAGE: ${{ inputs.backend_image }}
+        FILES_IMAGE: ${{ inputs.files_image }}
+        AUTHN_IMAGE: ${{ inputs.authn_image }}
         AUTHZ_IMAGE: ${{ inputs.authz_image }}
       run: |
         cd awscdk/bento/
@@ -59,10 +66,13 @@ jobs:
         vars=$(python3 parseYML.py)
         for v in $vars; do command="export $v"; eval $command;  done
 
+        FRONTEND_IMAGE="${FRONTEND_IMAGE:-$FRONTEND_IMAGE_VALUE}"
+        BACKEND_IMAGE="${BACKEND_IMAGE:-$BACKEND_IMAGE_VALUE}"
+        FILES_IMAGE="${FILES_IMAGE:-$FILES_IMAGE_VALUE}"
+        AUTHN_IMAGE="${AUTHN_IMAGE:-$AUTHN_IMAGE_VALUE}"
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$AUTHZ_IMAGE_VALUE}"
 
-        echo $AUTHZ_IMAGE_VALUE
-        echo $AUTHZ_IMAGE
+        envsubst < config.ini.$ENV_NAME > config.ini
 
     - name: Debug
       env:
@@ -74,6 +84,7 @@ jobs:
         ls -la
         ls -la awscdk/bento
 
+        cd awscdk/bento && cdk diff && cdk synth
         # cd awscdk/bento && cdk synth
 
     # - name: Build Config File
