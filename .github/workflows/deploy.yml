@@ -1,4 +1,4 @@
-name: Deploy CDK Stack
+name: Bento CDK Deploy
 permissions: 
   contents: write
   id-token: write
@@ -12,13 +12,19 @@ on:
       files_image:
       authn_image:
       authz_image:
+      cdk_command:
+        description: 'Which CDK Command To Run'
+        required: true
+        default: 'synth'
+        type: choice
+        options:
+          - synth
+          - diff
+          - deploy
 jobs:
   build:
     name: Deploy Bento
     runs-on: ubuntu-latest
-    # env:
-    #     ECR_REPOSITORY: bento-frontend
-    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
 
     - name: Check out code
@@ -74,24 +80,15 @@ jobs:
 
         envsubst < config.ini.$ENV_NAME > config.ini
 
-    - name: Debug
+    - name: Execute CDK
       env:
         AWS_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         ENV_NAME: ${{ inputs.environment }}
-      id: debug-steps
+        CDK_CMD: ${{ inputs.cdk_command }}
       run: |
-        ls -la
-        ls -la awscdk/bento
 
-        cd awscdk/bento && cdk diff && cdk synth
-        # cd awscdk/bento && cdk synth
-
-    # - name: Build Config File
-    #   id: build-config-file
-    #   run: |
-    #     echo "[main]" >> config.ini
-    #     echo "vpc_id =" >> config.ini
+        cd awscdk/bento && cdk $CDK_CMD
 
     # - name: Slack Notification
     #   uses: act10ns/slack@v1
