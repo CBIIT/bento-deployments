@@ -59,11 +59,12 @@ jobs:
         #git diff 
 
         vars=$(python3 parseYML.py)
-        for v in $vars; do command="export $v"; eval $command;  done
+        for v in $vars; do command="export $v"; echo $command; eval $command;  done
 
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-AUTHZ_IMAGE_VALUE}"
         # AUTHZ_IMAGE="${inputs.authz_image:-AUTHZ_IMAGE_VALUE}"
 
+        echo $AUTHZ_IMAGE_VALUE
         echo $AUTHZ_IMAGE
 
     - name: Debug
