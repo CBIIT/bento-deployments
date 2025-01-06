@@ -48,7 +48,7 @@ jobs:
     - name: Get config files
       env:
         ENV_NAME: ${{ inputs.environment }}
-        # AUTHZ_IMAGE: ${{ inputs.authz_image }}
+        AUTHZ_IMAGE: ${{ inputs.authz_image }}
       run: |
         cd awscdk/bento/
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./config.ini
@@ -61,8 +61,8 @@ jobs:
         vars=$(python3 parseYML.py)
         for v in $vars; do command="export $v"; eval $command;  done
 
-        # AUTHZ_IMAGE="${AUTHZ_IMAGE:-AUTHZ_IMAGE_VALUE}"
-        AUTHZ_IMAGE="${inputs.authz_image:-AUTHZ_IMAGE_VALUE}"
+        AUTHZ_IMAGE="${AUTHZ_IMAGE:-AUTHZ_IMAGE_VALUE}"
+        # AUTHZ_IMAGE="${inputs.authz_image:-AUTHZ_IMAGE_VALUE}"
 
         echo $AUTHZ_IMAGE
 
