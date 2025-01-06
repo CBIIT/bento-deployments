@@ -51,18 +51,15 @@ jobs:
         AUTHZ_IMAGE: ${{ inputs.authz_image }}
       run: |
         cd awscdk/bento/
-        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.cdk ./config.ini
+        aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
 
-        #git fetch origin cdk:cdk --force
         git fetch
         git show $ENV_NAME:deployments.yaml > deployments.yaml
-        #git diff 
 
         vars=$(python3 parseYML.py)
-        for v in $vars; do command="export $v"; echo $command; eval $command;  done
+        for v in $vars; do command="export $v"; eval $command;  done
 
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$AUTHZ_IMAGE_VALUE}"
-        # AUTHZ_IMAGE="${inputs.authz_image:-AUTHZ_IMAGE_VALUE}"
 
         echo $AUTHZ_IMAGE_VALUE
         echo $AUTHZ_IMAGE
