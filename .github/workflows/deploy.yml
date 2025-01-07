@@ -72,6 +72,7 @@ jobs:
         cat deployments.yaml
 
         vars=$(python3 parseYML.py)
+        echo $vars
         for v in $vars; do command="export $v"; eval $command;  done
 
         FRONTEND_IMAGE="${FRONTEND_IMAGE:-$IMAGE_FRONTEND}"
@@ -80,18 +81,18 @@ jobs:
         AUTHN_IMAGE="${AUTHN_IMAGE:-$IMAGE_AUTHN}"
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$IMAGE_AUTHZ}"
 
+        ls -la
+        
+        envsubst < config.ini.$ENV_NAME > config.ini
+
+        ls -la
+
         echo "final outputs" 
         echo $FRONTEND_IMAGE
         echo $BACKEND_IMAGE
         echo $FILES_IMAGE
         echo $AUTHN_IMAGE
         echo $AUTHZ_IMAGE
-
-        ls -la
-        
-        envsubst < config.ini.$ENV_NAME > config.ini
-
-        ls -la
 
     - name: Execute CDK
       env:
