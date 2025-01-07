@@ -10,6 +10,8 @@ class authnService:
 
     ### AuthN Service ###############################################################################################################
     service = "authn"
+
+    print("Updating authn Service to:     {}".format(config[service]['image']))
     
     # Set container configs
     if config.has_option(service, 'command'):

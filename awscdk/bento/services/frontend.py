@@ -8,6 +8,8 @@ class frontendService:
 
     ### Frontend Service ###############################################################################################################
     service = "frontend"
+
+    print("Updating frontend Service to:     {}".format(config[service]['image']))
     
     # Set container configs
     if config.has_option(service, 'command'):
