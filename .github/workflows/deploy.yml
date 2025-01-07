@@ -69,22 +69,10 @@ jobs:
         git fetch
         git show $ENV_NAME:deployments.yaml > deployments.yaml
 
-        echo "initial outputs" 
-        echo $FRONTEND_IMAGE
-        echo $BACKEND_IMAGE
-        echo $FILES_IMAGE
-        echo $AUTHN_IMAGE
-        echo $AUTHZ_IMAGE
-        
+        cat deployments.yaml
+
         vars=$(python3 parseYML.py)
         for v in $vars; do command="export $v"; eval $command;  done
-
-        echo "midrange outputs" 
-        echo $FRONTEND_IMAGE
-        echo $BACKEND_IMAGE
-        echo $FILES_IMAGE
-        echo $AUTHN_IMAGE
-        echo $AUTHZ_IMAGE
 
         FRONTEND_IMAGE="${FRONTEND_IMAGE:-$IMAGE_FRONTEND}"
         BACKEND_IMAGE="${BACKEND_IMAGE:-$IMAGE_BACKEND}"
