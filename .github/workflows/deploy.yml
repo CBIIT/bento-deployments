@@ -15,11 +15,11 @@ on:
       cdk_command:
         description: 'Which CDK Command To Run'
         required: true
-        default: 'synth'
+        default: 'diff'
         type: choice
         options:
-          - synth
           - diff
+          - synth
           - deploy
 jobs:
   build:
