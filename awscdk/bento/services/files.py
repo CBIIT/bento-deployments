@@ -9,8 +9,6 @@ class filesService:
     ### Files Service ###############################################################################################################
     service = "files"
 
-    print("Updating files Service to:     {}".format(config[service]['image']))
-    
     # Set container configs
     if config.has_option(service, 'command'):
         command = [config[service]['command']]

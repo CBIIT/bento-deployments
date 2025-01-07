@@ -11,8 +11,6 @@ class backendService:
     ### Backend Service ###############################################################################################################
     service = "backend"
 
-    print("Updating backend Service to:     {}".format(config[service]['image']))
-    
     # Set container configs
     if config.has_option(service, 'command'):
         command = [config[service]['command']]

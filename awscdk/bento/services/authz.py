@@ -11,8 +11,6 @@ class authzService:
     ### AuthZ Service ###############################################################################################################
     service = "authz"
 
-    print("Updating authz Service to:     {}".format(config[service]['image']))
-    
     # Set container configs
     if config.has_option(service, 'command'):
         command = [config[service]['command']]
