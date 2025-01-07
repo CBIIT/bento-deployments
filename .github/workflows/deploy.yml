@@ -21,6 +21,7 @@ on:
           - diff
           - synth
           - deploy
+          - destroy
 jobs:
   build:
     name: Deploy Bento
