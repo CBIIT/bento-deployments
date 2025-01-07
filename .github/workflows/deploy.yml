@@ -69,10 +69,7 @@ jobs:
         git fetch
         git show $ENV_NAME:deployments.yaml > ./deployments.yaml
 
-        cat deployments.yaml
-
         vars=$(python3 parseYML.py)
-        echo $vars
         for v in $vars; do command="export $v"; eval $command;  done
 
         FRONTEND_IMAGE="${FRONTEND_IMAGE:-$IMAGE_FRONTEND}"
@@ -83,13 +80,6 @@ jobs:
         
         envsubst < config.ini.$ENV_NAME > config.ini
 
-        echo "final outputs" 
-        echo $FRONTEND_IMAGE
-        echo $BACKEND_IMAGE
-        echo $FILES_IMAGE
-        echo $AUTHN_IMAGE
-        echo $AUTHZ_IMAGE
-
     - name: Execute CDK
       env:
         AWS_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT }}
@@ -98,7 +88,7 @@ jobs:
         CDK_CMD: ${{ inputs.cdk_command }}
       run: |
 
-        cd awscdk/bento && cdk $CDK_CMD
+        cd awscdk/bento && cdk $CDK_CMD --require-approval=never
 
     # - name: Slack Notification
     #   uses: act10ns/slack@v1
