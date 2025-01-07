@@ -78,11 +78,11 @@ jobs:
         AUTHN_IMAGE="${AUTHN_IMAGE:-$AUTHN_IMAGE_VALUE}"
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$AUTHZ_IMAGE_VALUE}"
 
-        echo FRONTEND_IMAGE
-        echo BACKEND_IMAGE
-        echo FILES_IMAGE
-        echo AUTHN_IMAGE
-        echo AUTHZ_IMAGE
+        echo $FRONTEND_IMAGE
+        echo $BACKEND_IMAGE
+        echo $FILES_IMAGE
+        echo $AUTHN_IMAGE
+        echo $AUTHZ_IMAGE
 
         ls -la
         
