@@ -80,14 +80,8 @@ jobs:
         FILES_IMAGE="${FILES_IMAGE:-$IMAGE_FILES}"
         AUTHN_IMAGE="${AUTHN_IMAGE:-$IMAGE_AUTHN}"
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$IMAGE_AUTHZ}"
-
-        ls -la
         
         envsubst < config.ini.$ENV_NAME > config.ini
-
-        ls -la
-
-        cat config.ini.$ENV_NAME
 
         echo "final outputs" 
         echo $FRONTEND_IMAGE
@@ -95,8 +89,6 @@ jobs:
         echo $FILES_IMAGE
         echo $AUTHN_IMAGE
         echo $AUTHZ_IMAGE
-
-        cat config.ini
 
     - name: Execute CDK
       env:
