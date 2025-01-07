@@ -88,8 +88,7 @@ jobs:
         CDK_CMD: ${{ inputs.cdk_command }}
       run: |
 
-        # cd awscdk/bento && cdk $CDK_CMD
-        cd awscdk/bento && cat config.ini
+        cd awscdk/bento && cdk $CDK_CMD
 
     # - name: Slack Notification
     #   uses: act10ns/slack@v1
