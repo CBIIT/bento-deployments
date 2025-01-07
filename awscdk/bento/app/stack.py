@@ -200,4 +200,5 @@ class Stack(Stack):
         authz.authzService.createService(self, config)
 
         # Files Service
+        print("Updating files Service to:     {}".format(config['files']['image']))
         files.filesService.createService(self, config)
