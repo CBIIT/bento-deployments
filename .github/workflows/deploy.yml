@@ -67,7 +67,7 @@ jobs:
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
 
         git fetch
-        git show $ENV_NAME:deployments.yaml > deployments.yaml
+        git show $ENV_NAME:deployments.yaml > ./deployments.yaml
 
         cat deployments.yaml
 
