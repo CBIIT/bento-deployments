@@ -10,7 +10,7 @@ imports/*
 */test.py
 cdk.out
 cdk.context.json
-*.ini
+*.ini*
 *.pem
 
 # Ignore debug
