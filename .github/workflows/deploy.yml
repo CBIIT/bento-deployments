@@ -82,7 +82,7 @@ jobs:
         
         envsubst < config.ini.$ENV_NAME > config.ini
 
-        ls -la awscdk/bento
+        ls -la
         cat config.ini
 
     - name: Execute CDK
