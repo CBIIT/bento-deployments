@@ -63,6 +63,7 @@ jobs:
         AUTHN_IMAGE: ${{ inputs.authn_image }}
         AUTHZ_IMAGE: ${{ inputs.authz_image }}
       run: |
+        pwd
         cd awscdk/bento/
         pwd
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
@@ -82,7 +83,7 @@ jobs:
         envsubst < config.ini.$ENV_NAME > config.ini
 
         ls -la awscdk/bento
-        cat awscdk/bento/config.ini
+        cat config.ini
 
     - name: Execute CDK
       env:
