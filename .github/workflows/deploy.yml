@@ -64,15 +64,13 @@ jobs:
         AUTHZ_IMAGE: ${{ inputs.authz_image }}
       run: |
         cd awscdk/bento/
+        pwd
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
 
         git fetch
         git show $ENV_NAME:deployments.yaml > ./deployments.yaml
 
-        cat deployments.yaml
-
         vars=$(python3 parseYML.py)
-        echo $vars
         for v in $vars; do command="export $v"; eval $command;  done
 
         FRONTEND_IMAGE="${FRONTEND_IMAGE:-$IMAGE_FRONTEND}"
@@ -80,19 +78,8 @@ jobs:
         FILES_IMAGE="${FILES_IMAGE:-$IMAGE_FILES}"
         AUTHN_IMAGE="${AUTHN_IMAGE:-$IMAGE_AUTHN}"
         AUTHZ_IMAGE="${AUTHZ_IMAGE:-$IMAGE_AUTHZ}"
-
-        ls -la
         
         envsubst < config.ini.$ENV_NAME > config.ini
-
-        ls -la
-
-        echo "final outputs" 
-        echo $FRONTEND_IMAGE
-        echo $BACKEND_IMAGE
-        echo $FILES_IMAGE
-        echo $AUTHN_IMAGE
-        echo $AUTHZ_IMAGE
 
     - name: Execute CDK
       env:
@@ -101,6 +88,9 @@ jobs:
         ENV_NAME: ${{ inputs.environment }}
         CDK_CMD: ${{ inputs.cdk_command }}
       run: |
+
+        ls -la awscdk/bento
+        cat awscdk/bento/config.ini
 
         cd awscdk/bento && cdk $CDK_CMD
 
