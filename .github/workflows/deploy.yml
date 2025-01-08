@@ -67,16 +67,19 @@ jobs:
         BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
       run: |
         if [[ "$ENV_NAME" =~ ^(dev|qa|stage|prod|cdk)$ ]]; then
-          echo "Environment is $ENV_NAME"
+          CONFIG_ENV=$ENV_NAME
+          echo "Environment is $CONFIG_ENV"
         else
-          echo "Environment is $BRANCH_NAME"
+          CONFIG_ENV=$BRANCH_NAME
+          echo "Environment is $CONFIG_ENV"
         fi
         
         cd awscdk/bento/
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
 
         git fetch
-        git show $ENV_NAME:deployments.yaml > ./deployments.yaml
+        # git show $ENV_NAME:deployments.yaml > ./deployments.yaml
+        git show $CONFIG_ENV:deployments.yaml > ./deployments.yaml
 
         vars=$(python3 parseYML.py)
         for v in $vars; do command="export $v"; eval $command;  done
