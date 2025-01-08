@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        description: 'Which Tier to update. "new_stack" will create a new environment named after the branch you are building from'
         type: environment
       frontend_image:
       backend_image:
@@ -63,7 +64,14 @@ jobs:
         FILES_IMAGE: ${{ inputs.files_image }}
         AUTHN_IMAGE: ${{ inputs.authn_image }}
         AUTHZ_IMAGE: ${{ inputs.authz_image }}
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
       run: |
+        if [[ "$ENV_NAME" =~ ^(dev|qa|stage|prod|cdk)$ ]]; then
+          echo "Environment is $ENV_NAME"
+        else
+          echo "Environment is $BRANCH_NAME"
+        fi
+        
         cd awscdk/bento/
         aws s3api get-object --bucket fnl-bento-cdk-config --key config.ini.$ENV_NAME ./config.ini.$ENV_NAME
 
