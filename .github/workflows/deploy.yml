@@ -71,7 +71,9 @@ jobs:
           echo "Environment is $CONFIG_ENV"
         else
           CONFIG_ENV=$BRANCH_NAME
+          BRANCH_NAME=$(echo $BRANCH_NAME | tr '_' '-')
           echo "Environment is $CONFIG_ENV"
+          echo "Updated branch name is $BRANCH_NAME"
         fi
         
         cd awscdk/bento/
